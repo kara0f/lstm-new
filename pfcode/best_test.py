@@ -40,7 +40,7 @@ def preprocess_signal(signal, fs=200):
     baseline = scipy.signal.medfilt(signal, kernel_size=window_size)
     signal = signal - baseline
     
-    # 带通滤波 (5-15Hz)
+    # 三阶带通滤波 (5-17Hz)
     b, a = scipy.signal.butter(3, [5, 17], btype='bandpass', fs=fs)
     signal = scipy.signal.filtfilt(b, a, signal)
     
@@ -209,15 +209,6 @@ def build_bilstm_attention_model(input_shape=(30, 1), num_classes=2):
     inputs = Input(shape=input_shape)  # (batch, 30, 1)
 
     # # —— 1. 卷积层提取局部特征 —— 
-    # x = Conv1D(filters=64, kernel_size=3, padding='same')(inputs)
-    # x = BatchNormalization()(x)
-    # x = Activation('relu')(x)
-    # x = MaxPool1D(pool_size=2)(x)    # -> (batch, 15, 32)
-
-    # x = Conv1D(filters=128, kernel_size=3, padding='same')(x)
-    # x = BatchNormalization()(x)
-    # x = Activation('relu')(x)
-    # x = MaxPool1D(pool_size=2)(x)    # -> (batch, 7, 64)
     conv1 = Conv1D(64, 3, padding='same', activation='relu')(inputs)
     bn1 = BatchNormalization()(conv1)
     
